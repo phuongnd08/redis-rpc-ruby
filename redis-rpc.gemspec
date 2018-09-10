@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.homepage = 'http://github.com/phuongnd08/redis-rpc-ruby'
   s.summary = 'Lightweight RPC for Redis'
   s.description = <<-DESCRIPTION
-    RedisRpc is the easiest to use RPC library in the world. (No small claim!) It
-    has implementations in Ruby, PHP, and Python.
+    RedisRpc is the easiest to use RPC library in the world. (No small claim!).
+    This version is a repackage that only has Ruby implementation.
 
     Redis is a powerful in-memory data structure server that is useful for building
     fast distributed systems. Redis implements message queue functionality with its
