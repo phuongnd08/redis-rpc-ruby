@@ -1,5 +1,9 @@
 Changelog
 ----------
+Version 1.0.0
+
+* Now we only have ruby
+
 Version 0.3.5
 
 * Ruby: feature: use multi_json gem  [Ryan Biesemeyer]

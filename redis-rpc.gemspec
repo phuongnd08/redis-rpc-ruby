@@ -5,10 +5,10 @@ Gem::Specification.new do |s|
   s.name = 'redis-rpc'
   s.version = RedisRpc::VERSION
   s.license = 'GPLv3'
-  s.authors = ['Nathan Farrington']
+  s.authors = ['Phuong Nguyen', 'Nathan Farrington']
   s.email = ['nathan@nathanfarrington.com']
 
-  s.homepage = 'http://github.com/nfarring/redis-rpc'
+  s.homepage = 'http://github.com/phuongnd08/redis-rpc-ruby'
   s.summary = 'Lightweight RPC for Redis'
   s.description = <<-DESCRIPTION
     RedisRpc is the easiest to use RPC library in the world. (No small claim!) It
