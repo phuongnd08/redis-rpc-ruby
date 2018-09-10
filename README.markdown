@@ -91,7 +91,7 @@ Installation
 The [redis-rb][redis-rb] library is required. Install using RubyGems:
 
 ```ruby
-gem install redisrpc
+gem install redis-rpc
 ```
 
 Internal Message Formats

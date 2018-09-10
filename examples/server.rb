@@ -2,7 +2,7 @@
 
 require 'redis'
 
-require File.expand_path('../../lib/redisrpc', __FILE__)
+require File.expand_path('../../lib/redis-rpc', __FILE__)
 require File.expand_path('../calc', __FILE__)
 
 redis_server = Redis.new
