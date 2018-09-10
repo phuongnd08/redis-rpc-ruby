@@ -1,10 +1,13 @@
 RedisRpc
 ========
 
-by Nathan Farrington
+originated by Nathan Farrington
 <http://nathanfarrington.com>
 
-RedisRpc is the easiest to use RPC library in the world. (No small claim!). This repo only has Ruby implementations
+RedisRpc is the easiest to use RPC library in the world. (No small claim!).
+
+repackaged by Phuong Nguyen
+This repo only has Ruby implementations
 
 Introduction
 ------------
@@ -31,7 +34,7 @@ of a mutable calculator object. The clients and servers from different
 languages are interoperable.
 
 <img
-src="http://github.com/nfarring/redisrpc/raw/master/docs/redisrpc_example.png"
+src="https://github.com/phuongnd08/redis-rpc-ruby/raw/master/docs/redisrpc_example.png"
 width=438 height=238>
 
 1. The client issues an RPC Request by using the Redis `RPUSH` command to push
