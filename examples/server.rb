@@ -8,5 +8,5 @@ require File.expand_path('../calc', __FILE__)
 redis_server = Redis.new
 message_queue = 'calc'
 local_object = Calculator.new
-server = RedisRpc::Server.new redis_server, message_queue, local_object
+server = RedisRpc::Server.new redis_server, message_queue, local_object, verbose: true
 server.run

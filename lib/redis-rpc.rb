@@ -81,11 +81,12 @@ module RedisRpc
   end
 
   class Server
-    def initialize( redis_server, message_queue, local_object, timeout=nil )
+    def initialize( redis_server, message_queue, local_object, timeout=nil, verbose: false)
       @redis_server = redis_server
       @message_queue = message_queue
       @local_object = local_object
       @timeout = timeout
+      @verbose = verbose
     end
 
     def run
@@ -117,6 +118,10 @@ module RedisRpc
         rpc_response = {'return_value' => return_value}
       rescue Object => err
         rpc_response = {'exception' => err.to_s, 'backtrace' => err.backtrace}
+      end
+
+      if @verbose
+        p rpc_response
       end
 
       # response tansport
