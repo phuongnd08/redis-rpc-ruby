@@ -1,11 +1,10 @@
-RedisRPC
+RedisRpc
 ========
 
 by Nathan Farrington
 <http://nathanfarrington.com>
 
-RedisRPC is the easiest to use RPC library in the world. (No small claim!) It
-has implementations in Ruby, PHP, and Python.
+RedisRpc is the easiest to use RPC library in the world. (No small claim!). This repo only has Ruby implementations
 
 Introduction
 ------------
@@ -13,16 +12,16 @@ Introduction
 [Redis][Redis] is a powerful in-memory data structure server that is useful
 for building fast distributed systems. Redis implements message queue
 functionality with its use of list data structures and the `LPOP`, `BLPOP`,
-and `RPUSH` commands. RedisRPC implements a lightweight RPC mechanism using
+and `RPUSH` commands. RedisRpc implements a lightweight RPC mechanism using
 Redis message queues to temporarily hold RPC request and response
 messages. These messages are encoded as [JSON][JSON] strings for portability.
 
 Many other RPC mechanisms are either programming language specific (e.g. [Java
 RMI][JavaRMI]) or require boiler-plate code for explicit typing (e.g.
-[Thrift][Thrift]). RedisRPC was designed to be extremely easy to use by
+[Thrift][Thrift]). RedisRpc was designed to be extremely easy to use by
 eliminating boiler-plate code while also being programming language neutral.
-High performance was not an initial goal of RedisRPC and other RPC libraries
-are likely to have better performance. Instead, RedisRPC has better programmer
+High performance was not an initial goal of RedisRpc and other RPC libraries
+are likely to have better performance. Instead, RedisRpc has better programmer
 performance; it lets you get something working immediately.
 
 Calculator Example
@@ -62,7 +61,7 @@ Ruby Usage
 ```ruby
 redis_server = Redis.new
 message_queue = 'calc'
-calculator = RedisRPC::Client.new redis_server, 'calc'
+calculator = RedisRpc::Client.new redis_server, 'calc'
 calculator.clr
 calculator.add 5
 calculator.sub 3
@@ -77,70 +76,8 @@ assert calculator.val == 4
 redis_server = Redis.new
 message_queue = 'calc'
 local_object = Calculator.new
-server = RedisRPC::Server.new redis_server, message_queue, local_object
+server = RedisRpc::Server.new redis_server, message_queue, local_object
 server.run
-```
-
-PHP Usage
----------
-
-*Note that the PHP library does not currently support named function arguments.*
-
-### client.php
-
-```php
-$redis_server = new Predis\Client();
-$message_queue = 'calc';
-$calculator = new RedisRPC\Client($redis_server, $message_queue);
-$calculator->clr();
-$calculator->add(5);
-$calculator->sub(3);
-$calculator->mul(4);
-$calculator->div(2);
-assert($calculator->val() == 4);
-```
-
-### server.php
-
-```php
-$redis_server = new Predis\Client();
-$message_queue = 'calc';
-$local_object = new Calculator();
-$server = new RedisRPC\Server($redis_server, $message_queue, $local_object);
-$server->run();
-```
-
-Python Usage
-------------
-
-### client.py
-
-```python
-redis_server = redis.Redis()
-message_queue = 'calc'
-calculator = redisrpc.Client(redis_server, message_queue)
-calculator.clr()
-calculator.add(5)
-calculator.sub(3)
-calculator.mul(4)
-calcaultor.div(2)
-assert calculator.val() == 4
-```
-
-The Python client also takes the additional keyword parameters `timeout`
-and `transport`. If `transport='pickle'` then it is possible to send Python
-objects as function arguments, but only if the server is also implemented in
-Python, and only if the server has access to the same libraries in order to
-unpickle the objects.
-
-### server.py
-
-```python
-redis_server = redis.Redis()
-message_queue = 'calc'
-local_object = calc.Calculator()
-server = redisrpc.Server(redis_server, message_queue, local_object)
-server.run()
 ```
 
 Installation
@@ -154,29 +91,10 @@ The [redis-rb][redis-rb] library is required. Install using RubyGems:
 gem install redisrpc
 ```
 
-### PHP Installation
-
-The [Predis][Predis] library is required.
-
-The RedisRPC PHP library is available from [Packagist][Packagist] at:
-<http://packagist.org/packages/nfarring/redisrpc>. You can
-use [Composer][Composer] to install into your PHP project.
-
-### Python Installation
-
-The [redis-py][redis-py] library is required.
-
-The RedisRPC Python library is available from [PyPI][PyPI] at:
-<http://pypi.python.org/pypi/redisrpc>. You can install with [pip][pip].
-
-```python
-pip install redisrpc
-```
-
 Internal Message Formats
 ------------------------
 All RPC messages are JSON objects. User code will never see these objects
-because they are handled by the RedisRPC library.
+because they are handled by the RedisRpc library.
 
 ### RPC Request
 An RPC Request contains two members: a `function_call` object and
@@ -224,87 +142,11 @@ course of action is probably to display the `exception` value to the user.
 
 Source Code
 -----------
-Source code is available at <http://github.com/nfarring/redisrpc>.
+Source code is available at <http://github.com/phuongnd08/redis-rpc-ruby>.
 
 License
 -------
 This software is available under the [GPLv3][GPLv3] or later.
-
-Changelog
-----------
-Version 0.3.5
-
-* Ruby: feature: use multi_json gem  [Ryan Biesemeyer]
-* Ruby: feature: server.run! flushes queue but server.run does not  [Ryan Biesemeyer]
-* Ruby: performance: only one call to rand instead of eight  [Ryan Biesemeyer]
-* Ruby: bugfix: RedisRPC::VERSION  [Ryan Biesemeyer]
-* Ruby: security: remove eval  [Ryan Biesemeyer]
-
-Version 0.3.4
-
-* Client now supports optional timeout.
-* Server now deletes message queue when starting.
-* PHP: Fixed exception handling.
-
-Version 0.3.3
-
-* Ruby: Added a Ruby library implementation.
-
-Version 0.3.2
-
-* Fixed some formatting in README.markdown that was causing problems when
-  converted to reStructredText.
-* Added version information to README.markdown.
-* Added installation instructions to README.markdown.
-* Python: Added RPC message logging using the logging module.
-* Python: Added redis as an installation dependency.
-* Python: Now using Distribute instead of distutils.
-
-Version 0.3.1
-
-* PHP: Changed composer.json predis dependency version.
-
-Version 0.3.0
-
-* Empty function call args and kwargs are no longer transmitted.
-* PHP: Added support for the PHP language.
-* PHP: Now installable with PHP Composer.
-* Python: Shortened the Client and Server class names.
-* Python: Debugging modified to print JSON representation.
-* Python: Switched the README file back to ReStructred Text.
-
-Version 0.2.1
-
-* Python: Fixed MANIFEST.in to reflect filename changes.
-
-Version 0.2.0
-
-* Simplified the JSON RPC message format.
-* Documented the JSON RPC message format.
-* Python: Using HTML file for README, will it work?
-* Python: Renamed calc_client to client.py.
-* Python: Renamed calc_server to server.py.
-* Python: Added a RemoteException class, which can be raised by the client.
-
-Version 0.1.2
-
-* Python: Fixed the download_url in setup.py.
-* Python: Renamed the README file to README.rst to support browsing on Github.
-
-Version 0.1.1
-
-* Python: Added README.
-* Python: Added long_description to setup.py.
-* Python: Added MANIFEST.in file.
-* Python: Added examples/ subdirectory to MANIFEST.
-* Python: Modified examples/ directory to be consistent with README file.
-* Python: Fixed the download_url in setup.py.
-
-Version 0.1.0
-
-* Changed to the GPL license.
-* Python: Removed unused functionality from python/redisrpc.py.
-* Python: Added a setup.py installer script.
 
 [Redis]: http://redis.io/
 
@@ -315,17 +157,5 @@ Version 0.1.0
 [Thrift]: https://en.wikipedia.org/wiki/Apache_Thrift
 
 [redis-rb]: https://github.com/ezmobius/redis-rb
-
-[Predis]: https://github.com/nrk/predis
-
-[Packagist]: http://packagist.org/
-
-[Composer]: https://github.com/composer/composer
-
-[redis-py]: https://github.com/andymccurdy/redis-py
-
-[PyPI]: http://pypi.python.org/
-
-[pip]: http://pypi.python.org/pypi/pip
 
 [GPLv3]: http://www.gnu.org/licenses/gpl.html

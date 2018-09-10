@@ -22,7 +22,7 @@ def do_calculations(calculator)
         calculator.missing_method
         assert false
     rescue NoMethodError
-    rescue RedisRPC::RemoteException
+    rescue RedisRpc::RemoteException
     end
 end
 
@@ -34,6 +34,6 @@ do_calculations calculator
 redis_server = Redis.new
 message_queue = 'calc'
 timeout = 1
-calculator = RedisRPC::Client.new redis_server, message_queue, timeout
+calculator = RedisRpc::Client.new redis_server, message_queue, timeout
 do_calculations calculator
 puts 'success!'

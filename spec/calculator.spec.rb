@@ -6,12 +6,12 @@ describe Calculator do
     context "when run #{( over_redisrpc ? 'over redisrpc' : 'locally')}" do
 
       if( over_redisrpc )
-        let(:rpc_server_builder){ lambda{ RedisRPC::Server.new( Redis.new($REDIS_CONFIG), 'calc', Calculator.new ) } }
-        before(:each) do 
+        let(:rpc_server_builder){ lambda{ RedisRpc::Server.new( Redis.new($REDIS_CONFIG), 'calc', Calculator.new ) } }
+        before(:each) do
           @server_pid = fork{ rpc_server_builder.call.run }
         end
         after(:each){ Process.kill(9, @server_pid); rpc_server_builder.call.flush_queue! }
-        let(:calculator){ RedisRPC::Client.new( $REDIS,'calc', 1) }
+        let(:calculator){ RedisRpc::Client.new( $REDIS,'calc', 1) }
       else
         let(:calculator){ Calculator.new }
       end
@@ -29,12 +29,12 @@ describe Calculator do
 
       it 'should raise when missing method is called' do
         expect{ calculator.a_missing_method }.to raise_error(
-          over_redisrpc ? RedisRPC::RemoteException : NoMethodError
+          over_redisrpc ? RedisRpc::RemoteException : NoMethodError
         )
       end
 
       it 'should raise timeout when execution expires' do
-        expect{ calculator.send(:sleep,2) }.to raise_error RedisRPC::TimeoutException
+        expect{ calculator.send(:sleep,2) }.to raise_error RedisRpc::TimeoutException
       end if over_redisrpc
     end
   end
