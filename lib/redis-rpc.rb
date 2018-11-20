@@ -20,7 +20,14 @@ require 'redis'
 
 module RedisRpc
 
-  class RemoteException < Exception; end
+  class RemoteException < Exception
+    attr_reader :remote_backtrace
+    def initialize(message, remote_backtrace)
+      super(message)
+      @remote_backtrace = remote_backtrace
+    end
+  end
+
   class TimeoutException < Exception; end
   class MalformedResponseException < RemoteException
     def initialize(response)
@@ -57,7 +64,7 @@ module RedisRpc
 
       # response handling
       rpc_response = MultiJson.load rpc_raw_response
-      raise RemoteException, rpc_response['exception'] if rpc_response.has_key? 'exception'
+      raise RemoteException.new(rpc_response['exception'], rpc_response['backtrace']) if rpc_response.has_key? 'exception'
       raise MalformedResponseException, rpc_response unless rpc_response.has_key? 'return_value'
       return rpc_response['return_value']
 
