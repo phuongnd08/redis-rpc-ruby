@@ -68,7 +68,7 @@ module RedisRpc
       raise MalformedResponseException, rpc_response unless rpc_response.has_key? 'return_value'
       return rpc_response['return_value']
 
-    rescue TimeoutException
+    rescue TimeoutException, SignalException
       # stale request cleanup
       @redis_server.lrem @message_queue, 0, rpc_raw_request
       raise $!
