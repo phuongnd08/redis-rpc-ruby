@@ -48,13 +48,23 @@ module RedisRpc
     end
 
     alias :send! :send
+
+    def get_timeout_at
+      # allow mock to manipulate timeout to verify safety behavior
+      Time.now.to_i + @timeout + 60
+    end
+
     def send( method_name, *args)
       raise MalformedRequestException, 'block not allowed over RPC' if block_given?
 
       # request setup
       function_call = {'name' => method_name.to_s, 'args' => args}
       response_queue = @message_queue + ':rpc:' + rand_string
-      rpc_request = {'function_call' => function_call, 'response_queue' => response_queue}
+      rpc_request = {
+        'function_call' => function_call, 'response_queue' => response_queue,
+        'timeout_at' => get_timeout_at,
+      }
+
       rpc_raw_request = MultiJson.dump rpc_request
 
       # transport
@@ -121,9 +131,17 @@ module RedisRpc
 
       # request execution
       begin
+        if rpc_request['timeout_at'].nil?
+          raise "Unsafe RPC call: timeout_at not specified"
+        end
+
+        if rpc_request['timeout_at'] < Time.now.to_i
+          raise "Expired RPC call. timeout_at = #{rpc_request['timeout_at']}. Time.now = #{Time.now.to_i}"
+        end
+
         return_value = @local_object.send( function_call['name'].to_sym, *function_call['args'] )
         rpc_response = {'return_value' => return_value}
-      rescue Object => err
+      rescue Exception => err
         rpc_response = {'exception' => err.to_s, 'backtrace' => err.backtrace}
       end
 
@@ -142,7 +160,7 @@ module RedisRpc
 
     def timeout
       @timeout or
-      $REDISRPC_SERVER_TIMEOUT or
+        $REDISRPC_SERVER_TIMEOUT or
       0
     end
   end
