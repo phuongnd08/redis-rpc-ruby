@@ -13,4 +13,14 @@ describe RedisRpc::Client do
       expect($REDIS.llen("example")).to eq 0
     end
   end
+
+  context "timeout" do
+    it "clear the backlog" do
+      expect {
+        client.perform
+      }.to raise_error RedisRpc::TimeoutException
+
+      expect($REDIS.llen("example")).to eq 0
+    end
+  end
 end
