@@ -98,11 +98,12 @@ module RedisRpc
   end
 
   class Server
-    def initialize( redis_server, message_queue, local_object, timeout=nil, verbose: false)
+    def initialize( redis_server, message_queue, local_object, timeout=nil, response_expiry=1, verbose: false)
       @redis_server = redis_server
       @message_queue = message_queue
       @local_object = local_object
       @timeout = timeout
+      @response_expiry = response_expiry
       @verbose = verbose
     end
 
@@ -153,7 +154,7 @@ module RedisRpc
       rpc_raw_response = MultiJson.dump rpc_response
       @redis_server.multi do
         @redis_server.rpush response_queue, rpc_raw_response
-        @redis_server.expire response_queue, 1
+        @redis_server.expire response_queue, @response_expiry
       end
       true
     end
